@@ -1,8 +1,24 @@
-testData <- load("data/smbsimdf1.RData")
-library(dplyr)
+#' Performs stratified cross validation sampling of a data frame
+#'
+#' Generates cross validation folds in a stratified way.
+#'
+#' @param data A \code{dataframe} which contains the base data to be split.
+#' @param targetVariable A \code{string} giving the name of the binary variable to stratify by.
+#' @param nfolds An integer giving the number of cross validation folds.
+#' @param uniqueID A \code{string} giving the name of a unique row identifier. Note, if there is no identifier, the function
+#' will filter the dataset by index.
+#' @param seed The seed value to use to reproduce results.
+#' @param positiveResponse The value of the target variable which indicates a positive response. Must be 1 or 0.
+#' @param keepData A Boolean indicating whether or not to keep the entire dataset along with extra columns indicating the folds.
+#'
+#' @return An object of the class \code{StratifiedXValS3}.
+#'
+#' @examples
+#' stratifySample()
+#'
+#' @export
 
-stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, seed = 123,
-                           positiveResponse = 1, keepData = FALSE) {
+stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, keepData = FALSE, positiveResponse = 1, seed = NULL) {
 
   negativeResponse <- (1 - positiveResponse)
 
@@ -79,13 +95,6 @@ stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, se
   outObject
 
 }
-
-
-stratifySample(data = smbsimdf1 %>% filter(rnd < 0.84), "fgood", nfolds = 3)
-l <- stratifySample(data = smbsimdf1, "fgood", nfolds = 7)
-
-
-
 
 
 
