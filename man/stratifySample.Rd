@@ -2,7 +2,7 @@
 % Please edit documentation in R/stratify_sample.R
 \name{stratifySample}
 \alias{stratifySample}
-\title{Performs stratified cross validation sampling of a data frame}
+\title{Performs stratified cross validation sampling of a data frame.}
 \usage{
 stratifySample(data, targetVariable, nfolds = 5, uniqueID = NULL,
   keepData = FALSE, positiveResponse = 1, seed = NULL)

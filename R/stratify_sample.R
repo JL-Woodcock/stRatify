@@ -1,4 +1,4 @@
-#' Performs stratified cross validation sampling of a data frame
+#' Performs stratified cross validation sampling of a data frame.
 #'
 #' Generates cross validation folds in a stratified way.
 #'
@@ -20,6 +20,35 @@
 
 stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, keepData = FALSE, positiveResponse = 1, seed = NULL) {
 
+  # Validate inputs.
+  if (!is.data.frame(data)) {
+    stop("Data is not of type data.frame.")
+  }
+
+  if (!is.integer(nfolds) | nfolds <= 1) {
+    stop("Argument nfolds must be a positive integer greater than or equal to two.")
+  }
+
+  if (!is.null(uniqueID)) {
+
+    if (is.null(data[[uniqueID]])) {
+      stop("uniqueID column does not exist in data.")
+    }
+
+    if (length(unique(data[[uniqueID]])) != nrow(data)) {
+      stop("Given unique ID is not unique on data.")
+    }
+
+  }
+
+  if (is.null(data[[targetVariable]])) {
+    stop("Target variable does not exist in data frame.")
+  }
+
+  if (sort(unique(data[[targetVariable]])) != c(0,1)) {
+    stop("Target variable must be binary numeric and have both values represented.")
+  }
+
   negativeResponse <- (1 - positiveResponse)
 
   # Create an ID column if one isn't given.
@@ -28,6 +57,7 @@ stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, ke
   } else {
     idColumn <- data[[uniqueID]]
   }
+
 
   # Create dataframe with just target and ID column.
   df <- data.frame(id = idColumn,
@@ -83,7 +113,8 @@ stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, ke
   xValList <- list(Train = trainList, Test = testList)
 
   for (fold in 1:nfolds) {
-    df[ ,fold + 2] <- ifelse(df$id %in% xValList[["Train"]][[fold]]$id, "Train", ifelse(df$id %in% xValList[["Test"]][[fold]]$id, "Test", "Error"))
+    df[ ,fold + 2] <- ifelse(df$id %in% xValList[["Train"]][[fold]]$id,
+                             "Train", ifelse(df$id %in% xValList[["Test"]][[fold]]$id, "Test", "Error"))
     colnames(df)[fold + 2] <- paste0("Fold_", fold)
   }
 
@@ -95,6 +126,7 @@ stratifySample <- function(data, targetVariable, nfolds = 5, uniqueID = NULL, ke
   outObject
 
 }
+
 
 
 
